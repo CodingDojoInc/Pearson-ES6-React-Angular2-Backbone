@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Star Wars Traffic</title>
+  <script src="jquery-1.11.3.min.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+  <script id="starship" type="text/template">
+    <h1><%= name %></h1>
+    <h3><%= manufacturer %></h3>
+    <h5># of Crew: <%= crew %></h5>
+    <h5>Cost: <%= cost_in_credits %></h5>
+  </script>
+  <script id="traffic" type="text/template">
+    <h1><%= Description %></h1>
+    <h3>Average Time: <%= AverageTime %></h3>
+  </script>
+</head>
+<body>
+  <a href="#/starships">Starships</a> | <a href="#/traffic">WSDOT</a>
+  <div id="output">
+
+  </div>
+</body>
+<script src="starTraffic.js"></script>
+</html>

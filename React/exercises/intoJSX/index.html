@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Into JSX</title>
+    <script src="node_modules/react/dist/react.js" charset="utf-8"></script>
+    <script src="node_modules/react-dom/dist/react-dom.js" charset=“utf-8”></script>
+    <!-- Add the babel transpiler -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Now we can write JSX in a script tag -->
+    <script type="text/babel">
+      ReactDOM.render(<h1>Hello World via JSX!</h1>, document.getElementById('root'));
+    </script>
+  </body>
+</html>

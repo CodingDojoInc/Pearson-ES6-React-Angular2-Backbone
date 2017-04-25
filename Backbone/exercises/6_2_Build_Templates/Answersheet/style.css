@@ -1,0 +1,19 @@
+ul.people{
+	margin-top: 0px;
+	padding-left: 0px;
+	display: inline-block;
+	vertical-align: top;
+	list-style-type: none;
+	width: 49%;
+}
+ul.people li{
+	border: 2px solid red;
+}
+ul.stacks{
+	display: inline-block;
+	vertical-align: top;
+	width: 49%;
+}
+ul.stacks div{
+	border: 2px solid green;
+}
