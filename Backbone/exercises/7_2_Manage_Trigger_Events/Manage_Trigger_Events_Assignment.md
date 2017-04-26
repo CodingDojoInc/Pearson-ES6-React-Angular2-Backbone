@@ -1,5 +1,5 @@
 # Building Views and Adding Events
-![BPL](https://gitlab.com/coding-dojo/Pearson-ES6-React-Angular2-Backbone/raw/master/Backbone/exercises/7_2_Manage_Trigger_Events/Manage_Trigger_Events_Assignment.png)
+![BPL](https://github.com/CodingDojoInc/Pearson-ES6-React-Angular2-Backbone/blob/master/Backbone/exercises/7_2_Manage_Trigger_Events/Manage_Trigger_Events_Assignment.png)
 
 #### Use the following tips
 - Create your models using this information for a few of the Premier League's team names, nicknames, and years founded:
