@@ -1,5 +1,5 @@
 # Putting Collections in Charge
-![People List](https://gitlab.com/coding-dojo/Pearson-ES6-React-Angular2-Backbone/raw/master/Backbone/exercises/6_3_Collection_Views_Build_Model_Views/Collection_Views_Assignment.png)
+![People List](https://github.com/CodingDojoInc/Pearson-ES6-React-Angular2-Backbone/blob/master/Backbone/exercises/6_3_Collection_Views_Build_Model_Views/Collection_Views_Assignment.png)
 
 Use the code base below to recreate the wireframe.
 
