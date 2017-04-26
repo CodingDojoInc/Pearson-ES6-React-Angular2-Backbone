@@ -33,7 +33,7 @@ Use this HTML snippet as a starting point.
 </html>
 ```
 
-![People & Stacks](https://gitlab.com/coding-dojo/Pearson-ES6-React-Angular2-Backbone/raw/master/Backbone/exercises/6_2_Build_Templates/Backbone_Views_Assignment1.png)
+![People & Stacks](https://github.com/CodingDojoInc/Pearson-ES6-React-Angular2-Backbone/blob/master/Backbone/exercises/6_2_Build_Templates/Backbone_Views_Assignment1.png)
 
 #### Criteria
 - Every Person model needs a name.
