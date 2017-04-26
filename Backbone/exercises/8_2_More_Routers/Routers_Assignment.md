@@ -1,5 +1,5 @@
 # Assignment: Starship Traffic
-![Star Wars DOT](https://gitlab.com/coding-dojo/Pearson-ES6-React-Angular2-Backbone/raw/master/Backbone/exercises/8_2_More_Routers/Routers_Assignment.png)
+![Star Wars DOT](https://github.com/CodingDojoInc/Pearson-ES6-React-Angular2-Backbone/blob/master/Backbone/exercises/8_2_More_Routers/Routers_Assignment.png)
 
 Build out the wireframe above.  You should need...
 
