@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Promises</title>
+  <script>
+"use strict";
+
+
+//  4A - Promises
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+// OldSchoolCallbacksCanImplementChains(); 
+// PromisesCanDoTheSameThings(); 
+// PromisesCanBeChained(); 
+
+// PromiseResolveWillCreateAFulfilledPromise(); 
+// PromiseRejectWillCreateARejectedPromise(); 
+
+// PromiseAllRequiresEveryPromiseToResolve(); 
+// PromiseAllWaitsForTheLastResolve(); 
+// PromiseAllCatchesImmediatelyOnFirstReject(); 
+
+// PromiseRaceCompletesUponFirstResolve(); 
+// PromiseRaceCompletesUponFirstRejection(); 
+
+
+//  By simply passing function pointers (in this case, arrow
+//  functions), we can already implement arbitreary call chains.
+function OldSchoolCallbacksCanImplementChains() { 
+  function decide(success, error) {
+    console.log("\tLooking to land in the top 80%....");
+    let numConsec = 0;
+    while (true) {
+      let x = Math.random();
+      console.log("\tRandomly generated", x);
+      if (x >= 0.2) { success(++numConsec); }
+      else          { error(x);  break;     }
+    }
+  }
+  function TakeAChance() {
+    decide( (numTimes) => console.log("\tLucky", numTimes, "times in a row now!"),
+            (data) => console.log("\tAh gee, unlucky (" + data + ") - so sorry!") );
+  }
+  console.log("-----");
+
+  TakeAChance();
+  return true;
+}
+
+//  The Promise object requires a function that in turn accepts
+//  both a success callback and an error callback. 
+function PromisesCanDoTheSameThings() { 
+  console.log("-----");
+
+  let decide = new Promise(
+    function(resolve, reject) {
+      let num = Math.random();
+      console.log("\tRandomly generated", num);
+      if (num >= 0.2) { resolve(num); }
+      reject(new Error('(' + num + ') - so sorry!'));
+    }
+  );
+  decide.then(  (data) => { console.log("\tWe got lucky (" + data + ")"); } )
+        .catch( (err)  => { console.log("\tAh - unlucky " + err.message); } );
+  return true;
+}
+
+//  If the resolution of one promise returns another promise,
+//  then multiple promise-resolves can be chained together.
+function PromisesCanBeChained() { 
+  console.log("-----");
+
+  const firstPromiseCallback = (response, reject) => {
+    let age = 12 + Math.round(Math.random() * 1500)/100;
+    while (age>22) { age--; }
+    response(age);
+  };
+  let firstPromise = new Promise((response, reject) => {
+      console.log("Setting one-shot timer during first promise.");
+      setTimeout(firstPromiseCallback, 2000, response, reject);
+    }
+  );
+
+  let secondPromise = (data) => {
+    console.log("So, how old is our character?");
+    return new Promise((response,reject) => {
+        if (data >= 13) { 
+          if (data < 20) { console.log("He's an angst-ridden but highly lovable teenager...."); }
+          response(data); 
+        }
+        reject(new Error(`Too Young For the Blues: age ${data}`));
+      }
+    );
+  }
+  
+  let thirdPromise = (data) => {
+    return new Promise((response,reject) => {
+        if (data >= 16) { 
+          console.log("Yep, old enough to drive!");
+          response(data); 
+        }
+        reject(new Error(`Nope, too young to drive: age ${data}`));
+      }
+    );
+  }
+  
+  let fourthPromise = (data) => {
+    return new Promise((response,reject) => {
+        if (data >= 18) { 
+          console.log("Old enough to vote!");
+          response(data); 
+        }
+        reject(new Error(`Nope, too young to vote: age ${data}`));
+      }
+    );
+  }
+
+  function fifthPromiseCallback(response, data, displayStr) {
+    console.log(displayStr);
+    response(data); 
+  }
+  let fifthPromise = (data) => {
+    return new Promise((response,reject) => {
+        if (data >= 21) { 
+          console.log("Wait for it....");
+          setTimeout(fifthPromiseCallback, 1000, response, data, "Full-fledged adult!");
+        }
+        else { reject(new Error(`Not quite a full-fledged adult: age ${data}. `)); }
+      }
+    );
+  }
+
+  firstPromise.then(secondPromise)
+              .then(thirdPromise)
+              .then(fourthPromise)
+              .then(fifthPromise)
+              .then((age)=>console.log("Wow, he made it to adulthood!  Guess life is all downhill from here, at age", age))
+              .catch((err)=>console.log(err.message, "Sorry."));
+
+  return true;    //  Note that this will return before the promise(s) complete...
+}
+
+//  Promise.resolve() creates a ready-made successful promise.
+function PromiseResolveWillCreateAFulfilledPromise() { 
+  console.log("-----");
+
+  const successfulPromise = Promise.resolve("Guaranteed winner.")
+  successfulPromise.then((result) => console.log("Success! ", result))
+                   .catch((error) => console.log("Failure! ", error.message));
+
+  console.log("The eventual outcome here should be 'Success!'");
+  return true;
+}
+
+//  Likewise, Promise.reject() pre-builds a failed promise. 
+function PromiseRejectWillCreateARejectedPromise() { 
+  console.log("-----");
+
+  const unsuccessfulPromise = Promise.reject(new Error("This is intentional, I \"promise\"."));
+  unsuccessfulPromise.then((result) => console.log("(Unexpected)  Success! ", result))
+                     .catch((error) => console.log("Failure!", error.message));
+
+  console.log("The eventual outcome here should be 'Failure!'");
+  return true;
+}
+
+//  Promise.all accepts an array of promises.  If all of them
+//  resolve successfully, then Promise.all itself will resolve,
+//  returning a results array (one returned from each promise).
+function PromiseAllRequiresEveryPromiseToResolve() { 
+  console.log("-----");
+
+  let firstPromise = new Promise((response, reject)=> {
+    const randomVal = Math.random();
+    console.log(`randomVal: ${randomVal}`);
+    if (randomVal >= 0.3) {
+      response(randomVal)
+    }
+    reject(new Error(`Too low: ${randomVal}`));
+  });
+  let secondPromise = new Promise((response, reject)=> {
+    const randomVal = Math.random();
+    console.log(`randomVal: ${randomVal}`);
+    if (randomVal >= 0.3) {
+      response(randomVal)
+    }
+    reject(new Error(`Too low: ${randomVal}`));
+  });
+  const promiseArr = [firstPromise, secondPromise];
+  Promise.all(promiseArr)
+         .then((resultsArr) => { console.log("Success:", resultsArr); })
+         .catch((err)       => { console.log("Failure:", err.message); }); 
+}
+
+//  In fact, Promise.all will wait until every single promise
+//  in its promise array is conplete, before resolving itself.
+function PromiseAllWaitsForTheLastResolve() { 
+  const goodCallback = (refcon, response) => { 
+    console.log(`Timer success (${refcon})`);
+    response(refcon); 
+  };
+
+  let firstPromise = new Promise((response, reject) => { 
+      const firstDuration = 5000;
+      console.log(`Setting timer for ${firstDuration/1000} secs in future`);
+      setTimeout(goodCallback, firstDuration, firstDuration, response);
+    });
+
+  let secondPromise = new Promise((response, reject) => { 
+      const secondDuration = 3000;
+      console.log(`Setting timer for ${secondDuration/1000} secs in future`);
+      setTimeout(goodCallback, secondDuration, secondDuration, response);
+    });
+
+  let thirdPromise = Promise.resolve("Nothing can stop my perfect day!");
+
+  let fourthPromise = new Promise((response, reject) => { 
+      const thirdDuration = 1000;
+      console.log(`Setting timer for ${thirdDuration/1000} secs in future`);
+      setTimeout(goodCallback, thirdDuration, thirdDuration, response);
+    });
+  
+  const promiseArr = [firstPromise, secondPromise, thirdPromise, fourthPromise];
+  Promise.all(promiseArr)
+         .then((resultsArr) => { console.log("Success:", resultsArr); })
+         .catch((err)       => { console.log("Failure:", err.message); }); 
+}
+
+//  However, Promise.all will immediately exit when the
+//  first of any of the promises throws a reject outcome. 
+function PromiseAllCatchesImmediatelyOnFirstReject() { 
+  console.log("-----");
+
+  const goodCallback = (refcon, response) => { 
+    console.log(`Timer success (${refcon})`);
+    response(refcon); 
+  };
+  const badCallback = (refcon, reject) => { 
+    console.log(`Timer fail! (${refcon})`);
+    reject(new Error(`Timer fail ${refcon}`));
+  };
+
+  let firstPromise = new Promise((response, reject) => { 
+    const firstDuration = 5000;
+    console.log(`Setting timer for ${firstDuration/1000} secs in future`);
+    setTimeout(goodCallback, firstDuration, firstDuration, response);
+  });
+
+  let secondPromise = new Promise((response, reject) => { 
+    const secondDuration = 3000;
+    console.log(`Setting timer for ${secondDuration/1000} secs in future`);
+    setTimeout(badCallback, secondDuration, secondDuration, reject);
+  });
+
+  let thirdPromise = new Promise((response, reject) => { 
+    const thirdDuration = 1000;
+    console.log(`Setting timer for ${thirdDuration/1000} secs in future`);
+    setTimeout(goodCallback, thirdDuration, thirdDuration, response);
+  });
+
+  let fourthPromise = Promise.resolve("Nothing can stop my perfect day!");
+  
+  const promiseArr = [firstPromise, secondPromise, thirdPromise, fourthPromise];
+  Promise.all(promiseArr)
+         .then((resultsArr) => { console.log("Each promise succeeded:", resultsArr); })
+         .catch((err)       => { console.log("One (or more) failed:  ", err.message); }); 
+}
+
+//  Conversely, Promise.race immediately completes when any resolve
+//  OR reject occurs -- along with that one resolve or reject status.
+function PromiseRaceCompletesUponFirstResolve() { 
+  console.log("-----");
+
+  const goodCallback = (refcon, response) => { 
+    console.log(`Timer success (${refcon})`);
+    response(refcon); 
+  };
+  const badCallback = (refcon, reject) => { 
+    console.log(`Timer fail! (${refcon})`);
+    reject(new Error(`Timer fail ${refcon}`));
+  };
+
+  let firstPromise = new Promise((response, reject) => { 
+    const firstDuration = 5000;
+    console.log(`Setting timer for ${firstDuration/1000} secs in future`);
+    setTimeout(goodCallback, firstDuration, firstDuration, response);
+  });
+
+  let secondPromise = new Promise((response, reject) => { 
+    const secondDuration = 3000;
+    console.log(`Setting timer for ${secondDuration/1000} secs in future`);
+    setTimeout(badCallback, secondDuration, secondDuration, reject);
+  });
+
+  let thirdPromise = new Promise((response, reject) => { 
+    const thirdDuration = 1000;
+    console.log(`Setting timer for ${thirdDuration/1000} secs in future`);
+    setTimeout(goodCallback, thirdDuration, thirdDuration, response);
+  });
+  
+  console.log("Setting up a Promise race where a success will occur first....")
+  const promiseArr = [ firstPromise, secondPromise, thirdPromise ];
+  Promise.race(promiseArr)
+         .then((result) => { console.log("Promise race is over -- Success:", result); })
+         .catch((err)   => { console.log("Promise race is over -- Failure:", err.message); }); 
+}
+function PromiseRaceCompletesUponFirstRejection() { 
+  console.log("-----");
+
+  const goodCallback = (refcon, response) => { 
+    console.log(`Timer success (${refcon})`);
+    response(refcon); 
+  };
+  const badCallback = (refcon, reject) => { 
+    console.log(`Timer fail! (${refcon})`);
+    reject(new Error(`Timer fail ${refcon}`));
+  };
+
+  let firstPromise = new Promise((response, reject) => { 
+    const firstDuration = 5000;
+    console.log(`Setting timer for ${firstDuration/1000} secs in future`);
+    setTimeout(goodCallback, firstDuration, firstDuration, response);
+  });
+
+  let secondPromise = new Promise((response, reject) => { 
+    const secondDuration = 3000;
+    console.log(`Setting timer for ${secondDuration/1000} secs in future`);
+    setTimeout(badCallback, secondDuration, secondDuration, reject);
+  });
+
+  console.log("Setting up a Promise race where a failure will occur first....")
+  const promiseArr = [ firstPromise, secondPromise ];
+  Promise.race(promiseArr)
+         .then((resultsArr) => { console.log("Promise race is over -- Success:", resultsArr); })
+         .catch((err)       => { console.log("Promise race is over -- Failure:", err.message); }); 
+}
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

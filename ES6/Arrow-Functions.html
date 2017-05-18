@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Arrow Functions</title>
+  <script>
+"use strict";
+
+
+//  3 - Arrow functions
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+// NormalCallbacksHaveNoAssociatedTHIS(); 
+// ArrowFunctionsImproveUponTraditionalBind(); 
+
+// ArrowMethodsBindTHISAtMomentOfDefinition(); 
+
+// ArrowFunctionsCanPassParameters(); 
+// ArrowFunctionsCanDirectlyReturnValues(); 
+
+
+//  When passing object methods as parameters, any understanding
+//  of 'this' is lost when the functions are invoked later. 
+function NormalCallbacksHaveNoAssociatedTHIS() {
+
+  function StandaloneFuncCaller(callback) { callback(); }
+  function ObjectConstructor() {
+    this.checkThis = function() {
+      if (this instanceof ObjectConstructor) { console.log("\tWe correctly understand THIS"); }
+      else { console.log("\tWe don't know what THIS is"); }
+    }
+  }
+
+  console.log("-----");
+
+  const myObject = new ObjectConstructor();
+
+  console.log("Calling checkThis as a method on an object");
+  myObject.checkThis();
+
+  console.log("Calling checkThis as an arbitrary function");
+  StandaloneFuncCaller(myObject.checkThis);
+
+  return true;
+}
+
+//  However, arrow functions attach the current 
+//  definition of THIS to the code being declared.
+function ArrowFunctionsImproveUponTraditionalBind() {
+
+  function StandaloneFuncCaller(callback) { callback(); }
+  function ObjectConstructor() {
+    this.basicCheckThis = function() {
+      if (this instanceof ObjectConstructor) { console.log("\tWe correctly understand THIS (object method defined normally)"); }
+      else { console.log("\tWe don't know what THIS is (object method defined normally)"); }
+    }
+    this.arrowCheckThis = () => {
+      if (this instanceof ObjectConstructor) { console.log("\tWe correctly understand THIS (object method defined as arrow function)"); }
+      else { console.log("\tWe don't know what THIS is (object method defined as arrow function)"); }
+    }
+  }
+
+  console.log("-----");
+
+  const myObject = new ObjectConstructor();
+
+  console.log("Calling basicCheckThis as an arbitrary function parameter");
+  StandaloneFuncCaller(myObject.basicCheckThis);
+
+  console.log("Calling basicCheckThis with .bind(myObject)");
+  StandaloneFuncCaller(myObject.basicCheckThis.bind(myObject));
+  
+  console.log("Calling checkThis as an arrow-function instead");
+  StandaloneFuncCaller(myObject.arrowCheckThis);
+
+  return true;
+}
+
+//  This works both ways.  Unlike the above example, in this
+//  example the arrow functions bind when OUTSIDE any object
+//  constructor, and hence THIS is defined as the parent
+//  Window (or if "use strict", THIS === undefined).
+function ArrowMethodsBindTHISAtMomentOfDefinition() {
+  function StandaloneFuncCaller(callback) { callback(); }
+
+  console.log("-----");
+
+  const objectLiteral = {
+    arrowCheckThis : () => {
+      if (this === undefined) { console.log("\tWe (correctly) have no definition of THIS");   }
+      else                    { console.log("\tWe (think we) know THIS (but we are wrong!)"); }
+    }
+  }
+  objectLiteral.arrowCheckThis2 = () => {
+      if (this === undefined) { console.log("\tWe (correctly) have no definition of THIS");   }
+      else                    { console.log("\tWe (think we) know THIS (but we are wrong!)"); }
+    };
+
+  console.log("Calling arrow function that was bound to an object literal (outside any constructor)");
+
+  //  Whether during the object literal's declaration ... 
+  objectLiteral.arrowCheckThis();
+  //  ... or later when defining an object attribute ... 
+  objectLiteral.arrowCheckThis2();
+  //  ... the arrow function binds THIS at that moment. 
+
+  return true;
+}
+
+//  The canonical Pair-of-Parens, Big-Arrow, Code-In-Braces form
+//  continues, with input params going between the parens as expected.
+//  Note: the arrow function can also access other variables in scope.
+function ArrowFunctionsCanPassParameters() {
+
+  class ClassDefinition {
+    constructor(initVal) {
+      this.storedVal = initVal;
+      this.arrowFunction = (val1, val2) => { console.log("\tAccessing object attribute", this.storedVal, "and parameters", val1, val2); };
+    }
+  }
+
+  console.log("-----");
+
+  const myClassObject = new ClassDefinition(42);
+
+  const param1 = 11, param2 = 101;
+  console.log("\tCalling arrow function with two passed parameters:", param1, param2);
+  myClassObject.arrowFunction(param1, param2);
+
+  const delayMS = 3000;
+  const param3 = 22;
+  const param4 = 202;
+  console.log("\tSetting callback for", delayMS, "msec, with two passed parameters:", param3, param4);
+  setTimeout(myClassObject.arrowFunction, 3000, param3, param4);
+
+  return true;
+}
+
+//  Here, the Code-In-Braces piece can instead be articulated as a
+//  simple expression, which becopmes the function's return value.
+function ArrowFunctionsCanDirectlyReturnValues() {
+
+  function ObjectConstructor(initialVal) {
+    this.storedVal = initialVal;
+    this.arrowMultiplier = (multiplier) => this.storedVal * multiplier;
+  }
+
+  console.log("-----");
+
+  const initVal = 3;
+  const myClassObject = new ObjectConstructor(initVal);
+  const multiplier = 14;
+
+  console.log("\tCalling arrow function to return initial value", initVal, "multiplied by", multiplier);
+  console.log("\tThe resultant value is:", myClassObject.arrowMultiplier(14));
+
+  return true;
+}
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

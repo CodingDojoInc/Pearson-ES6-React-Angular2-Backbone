@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Classes</title>
+  <script>
+"use strict";
+
+
+//  4B - Classes
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+// TraditionalJSObjectConstructorsAreFunctions();
+// NewClassSyntaxIsSugarThatCreatesPrototype();
+// InheritanceRequiresExtendsAndSuper();
+// PrivateVariablesAreWonky();
+
+
+//  Traditional JS object constructors are simply functions that (when
+//  called with 'new'), use the invisible preceding 'var this={};'
+//  and the invisible subsequent 'return this;' to set up an object.
+function TraditionalJSObjectConstructorsAreFunctions() { 
+  
+  function OldClass()
+  {                             //  when called with 'new', "let this = {};" invisibly happens here....
+    this.isAnInstance = true;
+    this.displayMessage = () => console.log("Traditional constructors are functions that define an object with a __proto__ attribute:");
+  }                             //  when called with 'new', "return this;"  invisibly happens here....
+
+  console.log("-----");
+
+  let exampleInstance = new OldClass();
+  exampleInstance.displayMessage();
+  console.log(exampleInstance.__proto__);
+
+  return true;
+}
+
+//  The same is true with the new class syntax.  The constructor is still
+//  called with 'new', and populates a 'this' object.  
+function NewClassSyntaxIsSugarThatCreatesPrototype() { 
+  function OldClass() { this.isAnInstance = true; }
+
+  class ES6Class {                    //  when called with 'new', "let this = {};" invisibly happens here....
+    constructor()     { this.isAnInstance = true; }
+  }                                   //  when called with 'new', "return this;"  invisibly happens here....
+  console.log("-----");
+
+  let exampleInstance  = new OldClass();
+  let exampleFromClass = new ES6Class();
+  console.log("Class syntax does the same. Except for name, these objs should be identical:", exampleInstance, exampleFromClass);
+
+  return true;
+}
+
+//  A child class needs to use 'extends' after its class+Name.  If the
+//  child has a constructor, then it must call super() in order to invoke
+//  the parent constructor also, with any params needed by that function.
+function InheritanceRequiresExtendsAndSuper() { 
+  console.log("-----");
+
+  class Shape
+  {
+    constructor(name="Rectangle", height=0, width=0)
+    {
+      this.nameStr = name;
+      this.height  = height;
+      this.width   = width;
+    }
+    Name()      { return this.nameStr;                 }
+    Area()      { return this.height   * this.width;   }
+    Perimeter() { return this.height*2 + this.width*2; }
+  }
+  
+  console.log("When declaring a child class, simply use 'class [ChildClass] extends [ParentClass]'");
+  class Circle extends Shape
+  {
+    constructor(radius=0)
+    {
+      console.log("If child class has a constructor, 'super' calls the parent constructor (remember any required params)");
+      super("Circle", radius * 2, radius * 2);
+      this.radius = radius;
+    }
+    Area()      { return Math.PI * this.radius * this.radius; }
+    Perimeter() { return Math.PI * this.radius * 2;           }
+    Roundness() { return true;                                }
+  }
+
+  let s = new Shape("Square", 5, 5);
+  let c = new Circle(3);
+
+  //  Parent method functions are in the parent __proto__, same as methods inherited from Object (hasOwnProperty, etc.)
+  console.log(s.Name(), s.height, "by", s.width, "Area:", s.Area());
+  console.log(c.Name(), c.height, "by", c.width, "Area:", c.Area());
+
+  // console.log(s.Roundness());  //  Any child method functions are undefined in parent objects
+  return c.Roundness();
+}
+
+//  Because this class syntax generates entirely prototype-based objects, 
+//  private variables cannot be used as they previously were. Some suggest
+//  that you instead use weak maps, but that solution is pretty ... weak. 
+function PrivateVariablesAreWonky() {
+  let _privateVariable = new WeakMap();
+  class Shape
+  {
+    constructor(name="Rectangle")
+    {
+      _privateVariable.set(this,42);
+
+      this.name  = name;
+    }
+
+    getPrivateVar() { return _privateVariable.get(this); }
+  }
+  class Circle extends Shape
+  {
+    constructor()
+    {
+      super("Circle");
+    }
+  }
+  console.log("-----");
+
+  let s = new Shape("Square");
+  let c = new Circle();
+  
+  console.log("Square var:", s.getPrivateVar());
+  console.log("Circle var:", c.getPrivateVar());
+  console.log(_privateVariable);
+
+  return true;
+}
+
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

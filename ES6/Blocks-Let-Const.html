@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Blocks/Let/Const</title>
+  <script>
+"use strict";
+
+
+//  2 - Code Blocks, Var, Let, Const
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+// LetAndConstCannotBeRedeclared();
+// ConstCannotBeDeclaredWithoutAValue();
+
+// LetAsFORCounterIsNotScopedOutsideFOR();
+// LetAndConstAreNotScopedOutsideWHILE();
+// LetAndConstAreNotScopedOutsideIF();
+// LetAndConstAreNotScopedOutsideSWITCH();
+
+// NoneOfVarLetConstAreScopedOutsideFUNCTION();
+
+// ArbitraryBraceAreValidBlocksToContainLetAndConst();
+// VarLetConstAreAllAccessibleWithinChildScopes();
+
+// ConstsCannotBeRedefined();
+// AttributesOfConstObjectsCanBeChanged();
+
+// LetPreservesBlockLevelContextAsClosure();
+
+
+//  let/const can't redeclare within same scope, as var can (even with "use strict")
+function LetAndConstCannotBeRedeclared() {
+  var firstVar = 42;
+  let firstLet = 43;
+  const firstConst = 44;
+
+  var firstVar = 45;          //  can redeclare a var, within this scope
+  // let firstLet = 46;       //  cannot redeclare a let, within this scope
+  // const firstConst = 47;   //  cannot redeclare a const within this scope
+  
+  return true;
+}
+
+//  can separate declaration from definition, for let and var but not const.
+function ConstCannotBeDeclaredWithoutAValue() {
+  var secondVar;
+  let secondLet;
+
+  secondVar = 68;         
+  secondLet = 67;
+
+  // const secondConst;
+  // secondConst = 66;    //  a const must be defined at the moment of declaration
+  const secondConst = 66;
+
+  return true;
+}
+
+//  var is still defined after being used as a counter in FOR loops; let is not
+function LetAsFORCounterIsNotScopedOutsideFOR() {
+  console.log('-----');
+
+  for (var varA = 2; varA > 0; varA--) {
+    console.log(" Within FOR, varA is " + varA);
+  }
+  console.log("Outside FOR, varA is " + varA);
+  
+  for (let letA = 2; letA > 0; letA--) {
+    console.log(" Within FOR, letA is " + letA);
+  }
+  try        { console.log("Outside FOR, letA is " + letA);              }
+  catch(err) { console.log("Outside FOR, received error '" + err + "'"); }
+
+  return true;
+}
+
+//  var is scoped to function level and exists outside WHILE loops; let/const don't
+function LetAndConstAreNotScopedOutsideWHILE() {
+  console.log('-----');
+
+  var varA = 0;
+  while (varA < 2) {
+    var   varB   = ++varA;
+    let   letB   = varB;
+    const constB = varB;
+    console.log(" Within WHILE, varB and letB and constB declared " + varB);
+  }
+
+  console.log("Outside WHILE, varB is " + varB);
+  try        { console.log("Outside WHILE, letB is " + letB);              }
+  catch(err) { console.log("Outside WHILE, received error '" + err + "'"); }
+  try        { console.log("Outside WHILE, constB is " + constB);          }
+  catch(err) { console.log("Outside WHILE, received error '" + err + "'"); }
+  
+  return true;
+}
+
+//  var is scoped to function level and exists outside IF statement; let/const don't
+function LetAndConstAreNotScopedOutsideIF() {
+  console.log('-----');
+
+  if (true) {
+    var   varC   = 4;
+    let   letC   = varC;
+    const constC = varC;
+    console.log(" Within IF, varC and letC and constC declared " + varC);
+  }
+
+  console.log("Outside IF, varC is " + varC);
+  try        { console.log("Outside IF, letC is " + letC); }
+  catch(err) { console.log("Outside IF, received error '" + err + "'"); }
+  try        { console.log("Outside IF, letC is " + letC); }
+  catch(err) { console.log("Outside IF, received error '" + err + "'"); }
+  
+  return true;
+}
+
+//  var is scoped to function and exists outside SWITCH statement; let/const don't
+function LetAndConstAreNotScopedOutsideSWITCH() {
+  console.log('-----');
+
+  switch(42) {
+    default: 
+      var   varD   = 6; 
+      let   letD   = varD; 
+      const constD = varD; 
+      console.log(" Within SWITCH, varD and letD and constD declared " + varD);
+      break;
+  }
+
+  console.log("Outside SWITCH, varD is " + varD);
+  try        { console.log("Outside SWITCH, letD is " + letD);              }
+  catch(err) { console.log("Outside SWITCH, received error '" + err + "'"); }
+  try        { console.log("Outside SWITCH, constD is " + constD);          }
+  catch(err) { console.log("Outside SWITCH, received error '" + err + "'"); }
+
+  return true;
+}
+
+// none of var/let/const exist outside the function that declared/defined them
+function NoneOfVarLetConstAreScopedOutsideFUNCTION() {
+
+  function scopeFunction() {
+    var   varE   = 8;
+    let   letE   = varE;
+    const constE = varE;
+    
+    if (varE === 8) { console.log(" Within FUNCTION, varE and letE and constE declared as " + varE); }
+  }
+
+  console.log('-----');
+
+  scopeFunction();
+
+  try         { console.log("Outside FUNCTION, varE is " + varE); }
+  catch(err)  { console.log("Outside FUNCTION, received error '" + err + "'"); }
+  try         { console.log("Outside FUNCTION, letE is " + letE); }
+  catch(err)  { console.log("Outside FUNCTION, received error '" + err + "'"); }
+  try         { console.log("Outside FUNCTION, constE is " + constE); }
+  catch(err)  { console.log("Outside FUNCTION, received error '" + err + "'"); }
+  
+  return true;
+}
+
+//  any arbitrary matching set of curly-braces can serve as a block for let & const
+function ArbitraryBraceAreValidBlocksToContainLetAndConst() {
+
+  {
+    var   varE   = 8;
+    let   letE   = varE;
+    const constE = varE;
+    
+    if (varE === 8) { console.log(" Within arbitrary braces, varE and letE and constE declared as " + varE); }
+  }
+
+  console.log('-----');
+
+  console.log("Outside arbitrary braces, varE is " + varE); 
+  try         { console.log("Outside arbitrary braces, letE is " + letE); }
+  catch(err)  { console.log("Outside arbitrary braces, received error '" + err + "'"); }
+  try         { console.log("Outside arbitrary braces, constE is " + constE); }
+  catch(err)  { console.log("Outside arbitrary braces, received error '" + err + "'"); }
+  
+  return true;
+}
+
+//  var/let/const are all accessible from child functions or arbitrary code blocks
+function VarLetConstAreAllAccessibleWithinChildScopes() {
+  console.log('-----');
+
+  var   varF   = 10;
+  let   letF   = varF;
+  const constF = varF;
+  console.log("Parent scope, declaring varF and letF and constF " + varF);
+
+  function scopeFunction() {
+    console.log(" Within FUNCTION, varF is " + varF + ", changing to " + (++varF));
+    console.log(" Within FUNCTION, letF is " + letF + ", changing to " + (++letF));
+    console.log(" Within FUNCTION, constF is " + constF);
+
+    if (true) {
+      console.log(" Within IF, varF is " + varF + ", changing to " + (++varF));
+      console.log(" Within IF, letF is " + letF + ", changing to " + (++letF));
+      console.log(" Within IF, constF is " + constF);
+    }
+  }
+  scopeFunction();
+  console.log("Parent scope, varF is " + varF + " and letF is " + letF);
+
+  return true;
+}
+
+//  once defined consts cannot be redefined
+function ConstsCannotBeRedefined() {
+  function MyFunction() { console.log("MyFunction()"); }
+  function Other()      { console.log("Other()");      }
+
+  console.log("-----");
+
+  const constNum = 42;
+  const constBool = true;
+  const constStr = "constant";
+  const constFunc = MyFunction;
+  const constObj = { stable: true, greeting: "Word" };
+
+  try         { constNum++; console.log("Redefined const num " + constNum);                }
+  catch(err)  { console.log("Tried to redefine const num,  received error '" + err + "'"); }
+  
+  try         { constBool = false; console.log("Redefined const bool " + constBool);       }
+  catch(err)  { console.log("Tried to redefine const bool, received error '" + err + "'"); }
+  
+  try         { constStr = "changed"; console.log("Redefined const str " + constStr);      }
+  catch(err)  { console.log("Tried to redefine const str,  received error '" + err + "'"); }
+  
+  try         { constFunc = Other; console.log("Redefined const func " + constFunc);       }
+  catch(err)  { console.log("Tried to redefine const func, received error '" + err + "'"); }
+  
+  try         { constObj = { diff: 1 }; console.log("Redefined const obj " + constObj);    }
+  catch(err)  { console.log("Tried to redefine const obj,  received error '" + err + "'"); }
+  
+  return true;
+}
+
+//  const objects CAN have their attributes changed. Only the overall object reference is const
+function AttributesOfConstObjectsCanBeChanged() {
+  console.log("-----");
+
+  const constObj = { stable: true, greeting: "Word" };
+  console.log("Const obj has been defined as :", constObj);
+
+  delete constObj.stable;
+  constObj.greeting = "Bonjour";
+  constObj.diff = 1;
+  console.log("Changed one field at a time to:", constObj);
+
+  const constArr = [];
+  console.log("Const array object has been defined as:", constArr);
+
+  constArr.push(42);
+  constArr.push(43);
+  constArr.length++;
+  console.log("Pushed 2 vals, and incremented .length:", constArr);
+
+  return true;
+}
+
+//  With vars, functions are closures.  With lets and consts, the code block forms the closure.
+function LetPreservesBlockLevelContextAsClosure() {
+  console.log("-----");
+
+  console.log("Multiple timer callbacks will directly access the var and let");
+  for (var varDuration = 0; varDuration < 3000; varDuration += 1000) {
+    setTimeout(varFunction, varDuration, varDuration)
+    function varFunction(memo) { console.log(`Timer(${memo}) callback sees varDuration as ${varDuration}`); }
+  }
+  for (let letDuration = 0; letDuration < 3000; letDuration += 1000) {
+    setTimeout(letFunction, letDuration, letDuration)
+    function letFunction(memo) { console.log(`Timer(${memo}) callback sees letDuration as ${letDuration}`); }
+  }
+  console.log("Timers were set - final values of varDuration and letDuration are " + varDuration);
+}
+
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>
