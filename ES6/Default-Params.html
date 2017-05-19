@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Default Params</title>
+  <script>
+"use strict";
+
+
+//  5B - Rest Parameters, Default Parameters
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+
+// RestParametersReceiveAnySubsequentArgumentsAsAnArray();
+// RestParametersCanCompriseAllIncomingArguments();
+// DefaultParametersCanBeAssignedToUndefinedInputs();
+// DefaultsCanBeGivenToAnyParamRegardlessOfSequence();
+
+
+//  So-called 'rest' parameters receive the REST of any remaining
+//  arguments sent to the function, placing these in an array.
+function RestParametersReceiveAnySubsequentArgumentsAsAnArray()
+{
+  function RestParameters(param1, param2, ...theOtherParams) 
+  {                                       // theOtherParams becomes an array
+    console.log(theOtherParams);
+  }
+
+  console.log('-----');
+
+  RestParameters( 1,  2 ,  3 , "4", false );  //  [ 3, "4", false ]
+  RestParameters( 5,  6 , "7",  8 );          //  [ "7", 8 ]
+  RestParameters( 9, 'A', 0xB );              //  [ 11 ]
+  RestParameters( 12, 13 );                   //  [ ]
+
+  return true;
+}
+
+//  A 'rest' parameter can even be the entirety of 
+//  formally declared parameters for a function.
+function RestParametersCanCompriseAllIncomingArguments() 
+{ 
+  function RestParameters(...allParams) 
+  {
+    console.log(allParams);
+  }
+
+  console.log('-----');
+
+  RestParameters( 1,  2 ,  3 , "4", false );  //  [ 1,  2,  3, "4", false ]
+  RestParameters( 5,  6 , "7",  8 );          //  [ 5,  6, "7", 8 ]
+  RestParameters( 9, 'A', 0xB );              //  [ 9, "A", 11 ]
+
+  return true;
+}
+
+//  Function parameters can be given a default value, 
+//  to be assigned if the incoming value is undefined.
+function DefaultParametersCanBeAssignedToUndefinedInputs()
+{
+  function FunctionWithDefaultParam(param1, param2 = 42)
+  {
+    console.log(param1, param2);
+  }
+
+  console.log('-----');
+
+  FunctionWithDefaultParam( );             //  undefined  42
+  FunctionWithDefaultParam(0);             //  0          42
+
+  // FunctionWithDefaultParam(21 ,      ); //  ERROR at file parse time - Unexpected token (,)
+  FunctionWithDefaultParam(21, undefined); //  21  42
+  
+  // FunctionWithDefaultParam(      , 14);  //  ERROR at file parse time - Unexpected token (,)
+  FunctionWithDefaultParam(undefined, 28);  //  undefined, 28
+
+  return true;
+}
+
+//  Default values can be given to any of a function's params,
+//  regardless of their sequence in the function signature.
+function DefaultsCanBeGivenToAnyParamRegardlessOfSequence()
+{
+  function FunctionWithDefaultParam(param1 = 'my-default', param2)
+  {
+    console.log(param1, param2);
+  }
+
+  console.log('-----');
+
+  FunctionWithDefaultParam( );                          //  my-default undefined
+  FunctionWithDefaultParam(undefined);                  //  my-default undefined
+  FunctionWithDefaultParam(undefined, undefined);       //  my-default undefined
+
+  FunctionWithDefaultParam('first');                    //  first      undefined
+  FunctionWithDefaultParam('first', undefined);         //  first      undefined
+
+  FunctionWithDefaultParam(undefined, 'second' );       //  my-default second
+
+  FunctionWithDefaultParam('first', 'second' );         //  first      second
+  FunctionWithDefaultParam('first', 'second', 'third'); //  first      second
+}
+
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

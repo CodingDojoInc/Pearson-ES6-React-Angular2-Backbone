@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 String Literals</title>
+  <script>
+"use strict";
+
+
+//  5A - String Literals
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+
+// function();
+
+
+//  Backticks can define 
+function BacktickStuff()
+{
+  //  Backtick strs can contain real new-line chars and \specials
+  const multiLineStr1 = `I\'m\n
+    a
+    \tmultiple-line
+    string,
+    \`
+    really!
+  `;
+  const multiLineStr2 = "I\'m\n\n    a\n    \tmultiple-line\n    string,\n    \`\n    really!\n    ";
+  const multiLineStr3 = 'I\'m\n\n    a\n    \tmultiple-line\n    string,\n    \`\n    really!\n    ';
+  console.log(multiLineStr1);
+  console.log(multiLineStr2);
+  console.log(multiLineStr3);
+
+
+  //  Backtick strs can evaluate expressions
+  const innerStr2 = "I'm a cool inner string!";
+  const multiLineStr4 = ` ... and __I__ am a cool multi-line
+string that uses backticks! `;
+
+  const outerStr3 = `I want an inner string here: ${innerStr2+multiLineStr4}  Yeah baby!`;
+  console.log(outerStr3);
+}
+
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

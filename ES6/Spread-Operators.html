@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ES 2015 Spread Operators</title>
+  <script>
+"use strict";
+
+
+//  5C - Spread Operators and Destructuring
+
+
+// ----- Uncomment each function, to exercise that assertion.  -----
+// ----- Recommendation: step thru these in a browser debugger -----
+
+// SpreadOperatorsConvertArraysToCommaSeparatedValues();
+// MultipleSpreadOperatorsCanCombinedAsFunctionArguments();
+// SpreadOperatorsCanUnpackTheirValuesIntoAnotherArray();
+// SpreadOperatorIsTheConverseOfEnclosingInSquareBrackets();
+// DestructuringCanSwapOrResequenceUsingArrays();
+// DestructuringCanExtractOnlyCertainObjectKeys();
+DestructuringAlsoWorksWithObjectLiterals();
+
+
+//  Spread operators turn arrays into comma-separated value sequences.
+function SpreadOperatorsConvertArraysToCommaSeparatedValues()
+{
+  console.log('-----');
+
+  let arr  = ["1", 2, false];
+  let arr2 = ["4", 5, true];
+  console.log(arr);               //  [ "1", 2, false ]
+  console.log("Spread operators 'unpack' arrays into comma-separated value sequences, like this:");
+  console.log(...arr);            //    "1", 2, false
+ 
+  return true; 
+}
+
+//  Multiple spread operators can combine to form any 
+//  comma-separated list of arguments into a function. 
+function MultipleSpreadOperatorsCanCombinedAsFunctionArguments()
+{ 
+  console.log('-----');
+
+  let arr  = ["1", 2, false];
+  let arr2 = ["4", 5, true];
+
+  console.log("Multiple spread operators can combine to form function arguments:");
+  console.log(...arr2, ...arr);    //    "4", 5, true, "1", 2, false
+  console.log(...arr2, arr);       //    "4", 5, true, ["1",2,false]
+
+  return true;
+}
+
+//  Spread operators can be used to distribute array values into another array
+//  ... as opposed to the subarray occupying a single location in the parent.
+function SpreadOperatorsCanUnpackTheirValuesIntoAnotherArray()
+{ 
+  console.log('-----');
+
+  let arr  = ["1", 2, false];
+  let arr2 = ["4", 5, true];
+
+  console.log("Spread operators can be used to distribute an array's values into an array...");
+  console.log( [...arr2, ...arr] );  //  [ "4",  5,  true, "1", 2, false ]
+  console.log("... as opposed to the array itself occupying a single array location, such as this:");
+  console.log( [arr2, ...arr] );     //  [ ["4", 5, true], "1", 2, false ]
+
+  return true;
+}
+
+//  Putting the spread of an array, back into 
+//  an array, is identical to the array itself.
+function SpreadOperatorIsTheConverseOfEnclosingInSquareBrackets() 
+{ 
+  console.log('-----');
+
+  let arr  = ["1", 2, false];
+
+  console.log( arr );       //  [ ["1", 2, false]
+  console.log("Putting the spread of an array, back into an array, is identical to the array itself.");
+  console.log( [...arr] );  //  [ ["1", 2, false]
+
+  return true;
+}
+
+//  Destructuring can swap / shift / requence arrays
+function DestructuringCanSwapOrResequenceUsingArrays()
+{
+  console.log('-----');
+
+  let w = 'first';
+  let x = 'second';
+  let y = 'third';
+  let z = 'fourth';
+  [y, z, x, w] = [w, x, y, z];
+  
+  console.log("After using the [y, z, x, w] = [w, x, y, z] pattern, the values are resequenced:");
+  console.log(w, x, y, z);    //  fourth, third, first, second
+
+  return true;
+}
+
+//  Destructuring can provide encapsulation, 
+//  filtering objects so that only certain keys are extracted
+function DestructuringCanExtractOnlyCertainObjectKeys()
+{
+  console.log('-----');
+
+  const obj = { key2: "public2", key1: "public1", key3: "private" };
+  console.log("Here is our object before destructuring:", obj);
+
+  //  objects are unordered -- use this for encapsulation: to extract only certain keys
+  let {key1, key2, key4} = obj;
+
+  console.log("After 'let {key1, key2, key4} = obj', we have three variables declared:");
+  console.log("key1:", key1);       //  42
+  console.log("key2:", key2);       //  68
+  // console.log("key3:", key3);    //  ERROR - 'key3' is unknown (undeclared)
+  console.log("key4:", key4);       //  undefined (was undefined in obj, so same here)
+  console.log("We didn't declare 'key3' in our destructuring, so it is unknown (hidden)");
+
+  return true;
+}
+
+//  This technique also works on object literals, of course. 
+function DestructuringAlsoWorksWithObjectLiterals()
+{
+  console.log('-----');
+
+  //  can also use with object literals
+  const {key1, key2, key4} = { key2: "public2", key1: "public1", key3: "private" };  
+
+  console.log("After  let {key1, key2, key4} = { key2: 'public2', key1: 'public1', key3: 'private'}  we have:");
+  console.log("key1:", key1);       //  public1
+  console.log("key2:", key2);       //  public2
+  // console.log("key3:", key3);    //  ERROR - 'key3' is unknown (undeclared)
+  console.log("key4:", key4);       //  undefined (was undefined in obj, so same here)
+  console.log("We didn't declare 'key3' in our destructuring, so it is unknown (hidden)");
+
+  return true;
+}
+
+
+
+  </script>
+</head>
+<body>
+  
+</body>
+</html>
